@@ -1,26 +1,18 @@
-//schema
-
+const { MongoParseError } = require("mongodb");
 const mongoose= require("mongoose");
-
-
-// Defining schema for database
-const PostSchema = Mongoose.Schema({
-    id:{
-      type: Number,
-      required: true  
-    },
-    category: {
-        type: String,
-        required: true
-    },
-    question: {
-        type: String,
-        required: true
-    },
-    answer: {
-        type: String,
-        required: true
+require("dotenv").config() 
+const connectdb= async()=>{
+    try{
+        await mongoose.connect(process.env.MONGO_URL);
+        console.log("mongodb connected..")
     }
-})
+   
 
-module.exports = Mongoose.model("Posts",PostSchema);
+    catch(error){
+        console.error("connection error",error.message);
+        process.exit(1);
+    }
+};
+
+module.exports= connectdb;
+

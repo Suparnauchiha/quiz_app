@@ -1,55 +1,51 @@
-// importing npm modules
-const Express = require("express");
-const Post = require("../models/posts");
-const router = Express.Router();
+const Question = require("../models/question");
 
-// querying all the posts on homepage
-router.get("/",async (req,res)=>{
-    const posts = await Post.find();
-    console.log("Request for all posts");
-    res.json(posts);
-})
+exports.getQuestions = async (req, res) => {
+    try {
+        const question = await Question.find();
+        res.status(200).json(question);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
-// querying posts of a specific category
-router.get("/:category",async (req,res)=>{
-    const posts = await Post.find({category: req.params.category});
-    console.log("Request for posts of category: "+ req.params.category);
-    res.json(posts);
-})
+exports.getQuestionCategory = async (req, res) => {
+    try {
+        const question = await Question.find({ category: req.params.category });
+        if (!question) return res.status(404).json({ message: "question not found" });
+        res.status(200).json(question);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
+exports.createQuestion = async (req, res) => {
+    try {
+        const { question, options, correctAnswer, category, difficulty } = req.body;
+        const newQuestion = new Question({ question, options, correctAnswer, category, difficulty });
+        await newQuestion.save();
+        res.status(201).json(newQuestion);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
-// for handling post requests and pushing it to the MongoDB database
-router.post("/", async (req,res)=>{
-    console.log("Post request for :" + req.body);
-    const post = new Post({
-        id: req.body.id,
-        category: req.body.category,
-        question: req.body.question,
-        answer: req.body.answer
-    });
-    const savePost = await post.save().then(data =>{
-        res.json(data);
-    }).catch(err=>{
-        res.json({message: err});
-    })
-})
+exports.updateQuestion = async (req, res) => {
+    try {
+        const updateQuestion = await Question.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updateQuestion) return res.status(404).json({ message: "question not found" });
+        res.status(200).json(updateQuestion);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
-
-// Route to delete all the posts
-router.delete("/",(req,res)=>{
-    Post.deleteMany({}, function (err) {
-        if (err) return handleError(err);
-      });
-    res.send("All posts deleted!");
-})
-
-// Route to delete a specific post by id
-router.delete("/:id",(req,res)=>{
-    Post.deleteOne({id: req.params.id}, function(err){
-        if(err) return handleError(err);
-    })
-    res.send(`post ${req.params.id} deleted!`);
-})
-
-
-module.exports = router;
+exports.deleteQuestion = async (req, res) => {
+    try {
+        const deleteQuestion = await Question.findByIdAndDelete(req.params.id);
+        if (!deleteQuestion) return res.status(404).json({ message: "question not found" });
+        res.status(200).json({ message: "question deleted" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
