@@ -7,13 +7,16 @@ const {
     createQuestion,
     updateQuestion,
     deleteQuestion
+   
 }= require("../controllers/questionController");
 
 const router= express.Router();
 
 router.get("/",getQuestions);
 router.get("/:category",getQuestionCategory);
-router.get("/:id",getQuestionById);
+
+router.get("/id",getQuestionById);
+
 router.post("/",createQuestion);
 router.put("/:id",updateQuestion);
 router.delete("/:id",deleteQuestion);

@@ -15,8 +15,8 @@ const questionSchema = new mongoose.Schema({
      },
     category: { 
         type: String,
-        
-        required: true },
+        required:true
+       },
     difficulty: { 
         type: String, 
         
