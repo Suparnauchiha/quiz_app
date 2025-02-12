@@ -62,21 +62,3 @@ exports.deleteQuestion = async (req, res) => {
     }
 };
 
-// exports.groupQuestion= async(req,res)=>{
-//     try{
-//         const groups = await Question.aggregate([
-//                {
-//                 $group: {
-//                     _id: "$category",
-//                     count: { $sum: 1 }
-//                 }
-//             }
-//         ]);
-//         res.json(groups);
-       
-//     }
-//     catch(error){
-//         res.status(500).json({message: error.message})
-//     }
-// }
-
